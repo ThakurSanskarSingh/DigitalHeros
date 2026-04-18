@@ -1,0 +1,333 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.container { padding: 1.5rem 0; }
+.tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { padding: 6px 16px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all .15s; }
+.tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* WBS */
+.wbs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.wbs-col { display: flex; flex-direction: column; gap: 8px; }
+.wbs-header { padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; text-align: center; }
+.wbs-item { padding: 7px 10px; border-radius: 6px; font-size: 12px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); background: var(--color-background-secondary); line-height: 1.4; }
+.wbs-item.critical { border-color: var(--color-border-warning); color: var(--color-text-warning); background: var(--color-background-warning); }
+
+/* Timeline */
+.sprint { margin-bottom: 20px; }
+.sprint-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sprint-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.sprint-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.sprint-tasks { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.task-card { border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 8px 10px; background: var(--color-background-primary); }
+.task-card .tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 10px; margin-bottom: 5px; display: inline-block; }
+.task-card p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+.task-card strong { font-size: 12px; font-weight: 500; color: var(--color-text-primary); display: block; margin-bottom: 3px; }
+
+/* Tech Stack */
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.tech-card { border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 12px 14px; background: var(--color-background-primary); }
+.tech-card h4 { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+.tech-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.tech-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.tech-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.tech-why { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+
+/* Unique Ideas */
+.idea-list { display: flex; flex-direction: column; gap: 12px; }
+.idea-card { border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 14px 16px; background: var(--color-background-primary); }
+.idea-card h4 { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.idea-card p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.pill { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+
+/* Schema */
+.schema-wrap { overflow-x: auto; }
+.erd { display: flex; flex-wrap: wrap; gap: 12px; }
+.table-card { border: 0.5px solid var(--color-border-secondary); border-radius: 8px; overflow: hidden; min-width: 180px; max-width: 220px; background: var(--color-background-primary); }
+.table-head { padding: 6px 10px; font-size: 12px; font-weight: 500; }
+.table-field { display: flex; justify-content: space-between; padding: 4px 10px; font-size: 11px; border-top: 0.5px solid var(--color-border-tertiary); }
+.table-field .fname { color: var(--color-text-primary); }
+.table-field .ftype { color: var(--color-text-tertiary); font-family: var(--font-mono); }
+</style>
+
+<div class="container">
+<div class="tabs">
+  <button class="tab active" onclick="show('wbs')">WBS</button>
+  <button class="tab" onclick="show('sprint')">Sprint Plan</button>
+  <button class="tab" onclick="show('tech')">Tech Stack</button>
+  <button class="tab" onclick="show('schema')">DB Schema</button>
+  <button class="tab" onclick="show('ideas')">Stand-out Ideas</button>
+</div>
+
+<!-- WBS -->
+<div id="wbs" class="panel active">
+  <div class="wbs-grid">
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#E6F1FB;color:#0C447C;">1. Auth & Subscriptions</div>
+      <div class="wbs-item critical">Stripe integration (monthly + yearly)</div>
+      <div class="wbs-item">JWT auth + NextAuth.js</div>
+      <div class="wbs-item">Subscription status middleware</div>
+      <div class="wbs-item">Renewal / cancellation lifecycle</div>
+      <div class="wbs-item">Protected route guards</div>
+      <div class="wbs-item">Email verification flow</div>
+    </div>
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#EAF3DE;color:#27500A;">2. Score System</div>
+      <div class="wbs-item critical">Rolling 5-score logic</div>
+      <div class="wbs-item">Stableford range validation (1–45)</div>
+      <div class="wbs-item">Date-duplicate prevention</div>
+      <div class="wbs-item">Score CRUD UI (reverse-chron)</div>
+      <div class="wbs-item">Score history display</div>
+    </div>
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#FAEEDA;color:#633806;">3. Draw Engine</div>
+      <div class="wbs-item critical">Random draw algorithm</div>
+      <div class="wbs-item critical">Weighted algo (freq scores)</div>
+      <div class="wbs-item">3/4/5 match detection</div>
+      <div class="wbs-item">Simulation / pre-analysis mode</div>
+      <div class="wbs-item">Jackpot rollover logic</div>
+      <div class="wbs-item">Admin publish controls</div>
+    </div>
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#FBEAF0;color:#72243E;">4. Prize Pool</div>
+      <div class="wbs-item">Auto-calc from subscriber count</div>
+      <div class="wbs-item">40/35/25 tier split</div>
+      <div class="wbs-item">Multi-winner equal-split logic</div>
+      <div class="wbs-item">Jackpot carry-forward state</div>
+      <div class="wbs-item">Winner verification workflow</div>
+      <div class="wbs-item">Payout state machine (Pending→Paid)</div>
+    </div>
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#E1F5EE;color:#085041;">5. Charity</div>
+      <div class="wbs-item">Charity directory + search</div>
+      <div class="wbs-item">Individual charity profiles</div>
+      <div class="wbs-item">10% min contribution logic</div>
+      <div class="wbs-item">Custom % slider for user</div>
+      <div class="wbs-item">Featured charity section</div>
+      <div class="wbs-item">Golf day events listing</div>
+    </div>
+    <div class="wbs-col">
+      <div class="wbs-header" style="background:#EEEDFE;color:#3C3489;">6. Dashboards</div>
+      <div class="wbs-item">User dashboard (all 5 modules)</div>
+      <div class="wbs-item">Admin: user + sub management</div>
+      <div class="wbs-item">Admin: draw config + run</div>
+      <div class="wbs-item">Admin: charity CRUD</div>
+      <div class="wbs-item">Admin: winner verify + payouts</div>
+      <div class="wbs-item">Admin: reports + analytics</div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:14px;">Items in <span style="color:var(--color-text-warning);font-weight:500;">amber</span> are high-complexity / evaluator-critical tasks.</p>
+</div>
+
+<!-- Sprint Plan -->
+<div id="sprint" class="panel">
+  <div class="sprint">
+    <div class="sprint-header">
+      <span class="sprint-badge" style="background:#E6F1FB;color:#0C447C;">Week 1</span>
+      <span class="sprint-title">Foundation + Auth + DB</span>
+    </div>
+    <div class="sprint-tasks">
+      <div class="task-card"><span class="tag" style="background:#E6F1FB;color:#0C447C;">Setup</span><strong>Next.js 14 app + Supabase</strong><p>New Vercel + Supabase accounts. Configure env vars. Set up project structure.</p></div>
+      <div class="task-card"><span class="tag" style="background:#E6F1FB;color:#0C447C;">Auth</span><strong>NextAuth + Supabase Auth</strong><p>Email/password signup, JWT sessions, protected routes, middleware.</p></div>
+      <div class="task-card"><span class="tag" style="background:#FAEEDA;color:#633806;">Payments</span><strong>Stripe integration</strong><p>Monthly & yearly plans, webhooks, subscription status sync to DB.</p></div>
+      <div class="task-card"><span class="tag" style="background:#EAF3DE;color:#27500A;">DB</span><strong>Full schema setup</strong><p>All tables, RLS policies, indexes, seed data for charities.</p></div>
+    </div>
+  </div>
+  <div class="sprint">
+    <div class="sprint-header">
+      <span class="sprint-badge" style="background:#EAF3DE;color:#27500A;">Week 2</span>
+      <span class="sprint-title">Score System + Charity + Homepage</span>
+    </div>
+    <div class="sprint-tasks">
+      <div class="task-card"><span class="tag" style="background:#EAF3DE;color:#27500A;">Scores</span><strong>Rolling 5-score engine</strong><p>Score entry, validation, date-duplicate check, auto-drop oldest.</p></div>
+      <div class="task-card"><span class="tag" style="background:#EAF3DE;color:#27500A;">Scores</span><strong>Score UI</strong><p>Reverse-chron display, inline edit/delete, smooth animations.</p></div>
+      <div class="task-card"><span class="tag" style="background:#FBEAF0;color:#72243E;">Charity</span><strong>Charity directory</strong><p>Listing, search/filter, individual profile pages, events section.</p></div>
+      <div class="task-card"><span class="tag" style="background:#EEEDFE;color:#3C3489;">UI</span><strong>Homepage + marketing pages</strong><p>Emotion-led design, hero section, charity impact counter, CTA flow.</p></div>
+    </div>
+  </div>
+  <div class="sprint">
+    <div class="sprint-header">
+      <span class="sprint-badge" style="background:#FAEEDA;color:#633806;">Week 3</span>
+      <span class="sprint-title">Draw Engine + Prize Pool + User Dashboard</span>
+    </div>
+    <div class="sprint-tasks">
+      <div class="task-card"><span class="tag" style="background:#FAEEDA;color:#633806;">Draw</span><strong>Draw algorithms</strong><p>Random + weighted (freq) modes, 3/4/5 match detection, rollover.</p></div>
+      <div class="task-card"><span class="tag" style="background:#FAEEDA;color:#633806;">Draw</span><strong>Simulation mode</strong><p>Pre-analysis dashboard: run draws, preview results before publish.</p></div>
+      <div class="task-card"><span class="tag" style="background:#FAEEDA;color:#633806;">Prize</span><strong>Prize pool engine</strong><p>Auto-calc tiers, multi-winner split, jackpot state machine.</p></div>
+      <div class="task-card"><span class="tag" style="background:#EEEDFE;color:#3C3489;">Dashboard</span><strong>Full user dashboard</strong><p>All 5 modules: subscription, scores, charity, draws, winnings.</p></div>
+    </div>
+  </div>
+  <div class="sprint">
+    <div class="sprint-header">
+      <span class="sprint-badge" style="background:#EEEDFE;color:#3C3489;">Week 4</span>
+      <span class="sprint-title">Admin Panel + Verification + Polish</span>
+    </div>
+    <div class="sprint-tasks">
+      <div class="task-card"><span class="tag" style="background:#EEEDFE;color:#3C3489;">Admin</span><strong>Full admin dashboard</strong><p>User mgmt, draw config, charity CRUD, reports & analytics.</p></div>
+      <div class="task-card"><span class="tag" style="background:#FBEAF0;color:#72243E;">Winner</span><strong>Winner verification flow</strong><p>Proof upload, admin review, Pending→Paid state tracking.</p></div>
+      <div class="task-card"><span class="tag" style="background:#E1F5EE;color:#085041;">Email</span><strong>Email notifications</strong><p>Draw results, winner alerts, subscription confirmations via Resend.</p></div>
+      <div class="task-card"><span class="tag" style="background:#EAF3DE;color:#27500A;">QA</span><strong>Testing + polish + deploy</strong><p>Edge cases, responsive QA, error handling, performance pass.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tech Stack -->
+<div id="tech" class="panel">
+  <div class="tech-grid">
+    <div class="tech-card">
+      <h4>Frontend</h4>
+      <div class="tech-item"><div class="tech-dot" style="background:#185FA5;"></div><div><div class="tech-name">Next.js 14 (App Router)</div><div class="tech-why">SSR for SEO, server actions for forms</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#639922;"></div><div><div class="tech-name">Tailwind CSS v3</div><div class="tech-why">Utility-first, fast to iterate</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#7F77DD;"></div><div><div class="tech-name">Framer Motion</div><div class="tech-why">Micro-interactions, page transitions</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#0F6E56;"></div><div><div class="tech-name">shadcn/ui</div><div class="tech-why">Accessible, unstyled base components</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#D85A30;"></div><div><div class="tech-name">Recharts</div><div class="tech-why">Analytics charts in admin panel</div></div></div>
+    </div>
+    <div class="tech-card">
+      <h4>Backend / API</h4>
+      <div class="tech-item"><div class="tech-dot" style="background:#185FA5;"></div><div><div class="tech-name">Next.js Route Handlers</div><div class="tech-why">API layer within the same repo</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#639922;"></div><div><div class="tech-name">Supabase (Postgres)</div><div class="tech-why">DB, RLS, realtime, storage</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#0F6E56;"></div><div><div class="tech-name">Supabase Edge Functions</div><div class="tech-why">Draw engine, cron for monthly draws</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#7F77DD;"></div><div><div class="tech-name">NextAuth.js v5</div><div class="tech-why">Session auth + JWT, Supabase adapter</div></div></div>
+    </div>
+    <div class="tech-card">
+      <h4>Payments & Comms</h4>
+      <div class="tech-item"><div class="tech-dot" style="background:#185FA5;"></div><div><div class="tech-name">Stripe</div><div class="tech-why">Subscriptions, webhooks, PCI-compliant</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#639922;"></div><div><div class="tech-name">Resend + React Email</div><div class="tech-why">Transactional emails with JSX templates</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#D85A30;"></div><div><div class="tech-name">Uploadthing / Supabase Storage</div><div class="tech-why">Winner proof uploads</div></div></div>
+    </div>
+    <div class="tech-card">
+      <h4>DevOps & Quality</h4>
+      <div class="tech-item"><div class="tech-dot" style="background:#185FA5;"></div><div><div class="tech-name">Vercel</div><div class="tech-why">Deploy, preview URLs, edge config</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#7F77DD;"></div><div><div class="tech-name">Zod</div><div class="tech-why">Runtime schema validation everywhere</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#639922;"></div><div><div class="tech-name">TypeScript</div><div class="tech-why">Type safety, evaluator-impressing code</div></div></div>
+      <div class="tech-item"><div class="tech-dot" style="background:#0F6E56;"></div><div><div class="tech-name">Vitest + Playwright</div><div class="tech-why">Unit tests for draw engine, E2E flows</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DB Schema -->
+<div id="schema" class="panel">
+  <div class="erd">
+    <div class="table-card">
+      <div class="table-head" style="background:#E6F1FB;color:#0C447C;">users</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">email</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">name</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">charity_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">charity_pct</span><span class="ftype">int2</span></div>
+      <div class="table-field"><span class="fname">created_at</span><span class="ftype">timestamptz</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#FAEEDA;color:#633806;">subscriptions</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">user_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">stripe_sub_id</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">plan</span><span class="ftype">enum</span></div>
+      <div class="table-field"><span class="fname">status</span><span class="ftype">enum</span></div>
+      <div class="table-field"><span class="fname">renews_at</span><span class="ftype">timestamptz</span></div>
+      <div class="table-field"><span class="fname">cancelled_at</span><span class="ftype">timestamptz</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#EAF3DE;color:#27500A;">scores</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">user_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">score</span><span class="ftype">int2</span></div>
+      <div class="table-field"><span class="fname">played_on</span><span class="ftype">date</span></div>
+      <div class="table-field"><span class="fname">created_at</span><span class="ftype">timestamptz</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#E1F5EE;color:#085041;">charities</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">name</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">description</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">logo_url</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">is_featured</span><span class="ftype">bool</span></div>
+      <div class="table-field"><span class="fname">is_active</span><span class="ftype">bool</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#EEEDFE;color:#3C3489;">draws</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">month</span><span class="ftype">date</span></div>
+      <div class="table-field"><span class="fname">mode</span><span class="ftype">enum</span></div>
+      <div class="table-field"><span class="fname">numbers</span><span class="ftype">int2[]</span></div>
+      <div class="table-field"><span class="fname">status</span><span class="ftype">enum</span></div>
+      <div class="table-field"><span class="fname">pool_total</span><span class="ftype">numeric</span></div>
+      <div class="table-field"><span class="fname">jackpot_rolled</span><span class="ftype">numeric</span></div>
+      <div class="table-field"><span class="fname">published_at</span><span class="ftype">timestamptz</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#FBEAF0;color:#72243E;">draw_entries</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">draw_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">user_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">scores_snapshot</span><span class="ftype">jsonb</span></div>
+      <div class="table-field"><span class="fname">match_count</span><span class="ftype">int2</span></div>
+      <div class="table-field"><span class="fname">prize_amount</span><span class="ftype">numeric</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#FAECE7;color:#712B13;">winner_verifications</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">entry_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">proof_url</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">status</span><span class="ftype">enum</span></div>
+      <div class="table-field"><span class="fname">reviewed_by</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">paid_at</span><span class="ftype">timestamptz</span></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head" style="background:#F1EFE8;color:#2C2C2A;">charity_events</div>
+      <div class="table-field"><span class="fname">id (PK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">charity_id (FK)</span><span class="ftype">uuid</span></div>
+      <div class="table-field"><span class="fname">title</span><span class="ftype">text</span></div>
+      <div class="table-field"><span class="fname">event_date</span><span class="ftype">date</span></div>
+      <div class="table-field"><span class="fname">description</span><span class="ftype">text</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Stand-out Ideas -->
+<div id="ideas" class="panel">
+  <div class="idea-list">
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#FAEEDA;color:#633806;">UI/UX</span> Live charity impact counter on the homepage</h4>
+      <p>Instead of a static number, show a real-time animated counter: "£24,318 donated to 7 charities this year" — incrementing live using Supabase Realtime. This is the emotional gut-punch that makes someone subscribe immediately. No other golf platform does this.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#EEEDFE;color:#3C3489;">Draw UX</span> Theatrical draw reveal screen</h4>
+      <p>When a draw is published, don't just show a results table. Build a number-reveal animation — numbers flip one by one like a slot machine, with match highlighting and a confetti burst for jackpot winners. This makes the monthly draw feel like an event, not a database query.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#E1F5EE;color:#085041;">Score UX</span> Score trend sparkline + personality tags</h4>
+      <p>Show a tiny sparkline next to the score list showing their form trend. Add auto-generated tags like "Hot streak" or "On the up" based on score direction — purely frontend logic. Makes the score entry screen feel alive and personal, not like filling a form.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#E6F1FB;color:#0C447C;">Tech</span> Server Actions + optimistic UI for score entry</h4>
+      <p>Use Next.js 14 Server Actions with useOptimistic — when a user adds a score, it appears instantly in the list while the server processes it in the background. Most interns won't implement this. It shows deep Next.js knowledge and results in a snappy, native-feeling UX.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#FBEAF0;color:#72243E;">Admin</span> Draw simulation with frequency heatmap</h4>
+      <p>In admin's simulation mode, visualise all user scores as a heatmap (1–45) showing which numbers appear most. When switching to the weighted algorithm, show in real time how the draw distribution shifts. This turns an abstract feature into something an evaluator can interact with and be impressed by.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#F1EFE8;color:#2C2C2A;">Code quality</span> Write unit tests for the draw engine</h4>
+      <p>Most interns skip this. Write Vitest tests for: the rolling 5-score logic, the match-detection function (3/4/5), prize split with multiple winners, and jackpot rollover edge case. Include a README section showing test output. Evaluators who look at code will immediately notice this.</p>
+    </div>
+    <div class="idea-card">
+      <h4><span class="pill" style="background:#FAECE7;color:#712B13;">Architecture</span> Scores snapshot in draw_entries</h4>
+      <p>When a draw runs, snapshot each user's 5 scores at that moment into the draw_entries.scores_snapshot JSONB column. This means draw results are always historically accurate even if a user later edits their scores. This is a subtle data-modelling decision most people miss — and it directly shows "scalability thinking" from the eval criteria.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
